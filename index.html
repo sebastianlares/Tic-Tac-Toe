@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/styles/basic.css">
+    <link rel="stylesheet" href="assets/styles/main.css">
+    <title>Tic Tac Toe</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiko&family=DM+Mono&family=Darker+Grotesque&display=swap');
+    </style>
+</head>
+<body>
+    <h1>Tic Tac Toe</h1>
+    <form class="names" name="names">
+        <div class="one">
+            <label for="playerOne" class="playerOne">Player One</label>
+            <input type="text" name="playerOne" id='playerOne' required maxlength="20">
+        </div>
+        <div class="two">
+            <label for="playerTwo" class="playerTwos">Player Two</label>
+            <input type="text" name="playerTwo" id="playerTwo" class='playerTwo' required maxlength="20"><br>
+            <p class="ai">Vs Ai</p>
+            <input type="radio" name="playerTwo" class='playerTwo' id='aiButton' value="yes22_76">
+        </div>
+
+        <div>
+            <button type="submit" class="play" id="play">Play</button>
+        </div>
+    </form>
+    <div class="gameBoardContainer">
+ 
+    </div>
+    <script type="text/javascript" src="script.js"></script>
+</body>
+</html>
