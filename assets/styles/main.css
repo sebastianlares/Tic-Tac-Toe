@@ -30,7 +30,7 @@ form {
 
 .column3 {
     position: absolute;
-    height: 101%;
+    height: 98%;
     width: 6px;
     color: black;
     background: black;
@@ -41,7 +41,7 @@ form {
 
 .column4 {
     position: absolute;
-    height: 101%;
+    height: 98%;
     width: 6px;
     color: black;
     background: black;
@@ -83,11 +83,7 @@ form {
 .marker {
     display: flex;
     position: relative;
-    left: 43px;
-    top: 0px;
+    left: 29px;
+    top: 2px;
     font-size: 130px;
-}
-
-.ai {
-    display: inline;
 }

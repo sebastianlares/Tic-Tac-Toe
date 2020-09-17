@@ -1,101 +1,145 @@
+
+let playerOne = {};
+let playerTwo = {};
+
 const gameBoard = (() => {
 
-    let boardArray = ['1', '2', '3', '4', '5', '6', ' 7', ' 8', '9'];
+    let boardArray = [' ', ' ', ' ', ' ', ' ', ' ', '  ', '  ', ' '];
     const _board = document.querySelector('.gameBoardContainer');
     const box = () => document.querySelectorAll('.box');
+    const marker = () => document.querySelectorAll('.marker');
 
-    let counter = 0;
+    let _counter = 0;
     
     _makeBox = () => {
         let box = document.createElement('div');
-        box.id = counter;
+        let marker = document.createElement('div');
+        marker.id = 'marker' + _counter;
+        box.id = _counter;
+        marker.classList.add('marker');
         box.classList.add('box');
+        box.appendChild(marker);
         _board.appendChild(box);
-        counter++;
-    }
+        _counter++;
+    };
 
-    function makeBoard () {
-        boardArray.map(number => _makeBox());
-    }
-    makeBoard();
+    const _makeBoard = () => {
+        boardArray.map((number) => _makeBox());
+    };
+    _makeBoard();
 
     const _makeColumns = () => {
         for (let i = 1; i <= 4; i++) {
             let column = document.createElement('div');
             column.classList.add('column' + i);
             _board.appendChild(column);
-        }
-    }
+        };
+    };
     _makeColumns();
 
-    return {box, boardArray};
+    return {
+        box,
+        marker,
+        boardArray
+    };
 
 })();
 
-gameBoard.box().forEach(box => {
-    box.addEventListener('click', () => {
-        console.log('ds');
-    })
-})
-
-const setPlayersName = (() => {
-
-    let firstPlayerName;
-    let secondPlayerName;
+const gameForm = (() => {
 
     const formElement = document.querySelector('form');
     formElement.addEventListener('submit', (e) => {
         e.preventDefault();
-        new FormData(formElement);
+        e.stopPropagation();
+
+        playerOne = _setPlayerOne();
+        playerTwo = _setPlayerTwo();
+        console.log(playerOne, playerTwo);
     });
 
-    const playerOne = () => firstPlayerName;
+    _setPlayerOne = () => {
+        const playerOneInput = document.getElementById('playerOne');
+        const playerOneName = playerOneInput.value;
+        return playerFactory(playerOneName, 'X', true);
+    };
 
-    const playerTwo = () => secondPlayerName;
-
-    function playerOneName () {
-        formElement.addEventListener('formdata', (e) => {
-            let formData = e.formData;
-            firstPlayerName = formData.get('playerOne');
-        });
-    }
-    playerOneName();
-   
-    // a completar next: ai choice if playertwo no fue seleccionado
-    // checkfields = () => {
-    //     let aiButton = document.getElementById('aiButton').checked;
-    //     if (secondPlayerName === undefined && aiButton === true) {
-    //         console.log('no');
-    //     }
-    // }
-
-    function playerTwoName () {
-        formElement.addEventListener('formdata', (e) => {
-            let formData = e.formData;
-            secondPlayerName = formData.get('playerTwo');
-        });
-
-        // const playButton = document.getElementById('play');
-        // playButton.addEventListener('click', checkfields);
-        
-    }
-    playerTwoName();
-
-    return {playerOne, playerTwo};
-
+    _setPlayerTwo = () => {
+        const playerTwoInput = document.getElementById('playerTwo');
+        const playerTwoName = playerTwoInput.value;
+        return playerFactory(playerTwoName, 'O', false);
+    };
 })();
 
-console.log(setPlayersName.playerOne(), setPlayersName.playerTwo());
+const playerFactory = (name, marker, turn) => {
+    return {
+        name,
+        marker,
+        turn
+    };
+};
 
-const playerFactory = (name, marker) => {
+const gameLogic = (() => {
 
-    
-   return {name, marker};
-}
+    let winningCombinations = [
+        [0, 1, 2], 
+        [3, 4, 5], 
+        [6, 7, 8],
+        [0, 3, 6],
+        [2, 4, 7],
+        [3, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ];
 
-const playerOne = playerFactory(setPlayersName.playerOne(), 'x');
+    const playButton = document.getElementById('play');
+    playButton.addEventListener('click', () => {
+        _resetGame();
+        startGame();
+    });
 
-console.log(playerOne.marker);
+    const startGame = () => {
+        gameBoard.box().forEach(box => {
+            box.addEventListener('click', () => {
+                let marker = document.getElementById('marker' + box.id);
+                _setTurnAndPopulateArray(marker, box);
+                checkWinner();
+            }, {once: true});
+        });
+    };
 
-console.log(playerOne.name);
+    const _setTurnAndPopulateArray = (marker, box) => {
 
+            if (playerOne.turn == true) {
+                marker.innerText = playerOne.marker;
+                gameBoard.boardArray[box.id] = playerOne.marker;
+                playerOne.turn = false;
+                playerTwo.turn = true;
+            }
+            else if (playerTwo.turn == true) {
+                marker.innerText = playerTwo.marker;
+                gameBoard.boardArray[box.id] = playerTwo.marker;
+                playerTwo.turn = false;
+                playerOne.turn = true;
+            }
+    };
+
+    const checkWinner = () => {
+
+        winningCombinations.forEach(comb => {
+            const sequence = [gameBoard.boardArray[comb[0]],gameBoard.boardArray[comb[1]], gameBoard.boardArray[comb[2]]];
+
+            if (allSame(sequence)) {
+                console.log('winner');
+            }
+        });
+    };
+
+
+    // No logro setear el marker para que sea X u O, me elige siempre la X, por mas que ponga como marker la 'O'. Creo que el problema esta en que el gameBoard.boardArray tomo solo la X como el marker
+    const allSame = (arr) => arr.every(marker => marker === 'X');
+
+    const _resetGame = () => {
+
+    };
+
+})();
