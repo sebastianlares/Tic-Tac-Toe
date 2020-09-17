@@ -128,15 +128,19 @@ const gameLogic = (() => {
         winningCombinations.forEach(comb => {
             const sequence = [gameBoard.boardArray[comb[0]],gameBoard.boardArray[comb[1]], gameBoard.boardArray[comb[2]]];
 
-            if (allSame(sequence)) {
+                                    // no reconoce el marker O
+            if (allSame(sequence) || allSameO(sequence)) {
                 console.log('winner');
             }
         });
     };
 
 
-    // No logro setear el marker para que sea X u O, me elige siempre la X, por mas que ponga como marker la 'O'. Creo que el problema esta en que el gameBoard.boardArray tomo solo la X como el marker
+    // No logro setear el marker para que sea X u O, me elige siempre la X, por mas que ponga como marker la 'O'. Creo que el problema esta en que el gameBoard.boardArray tomo solo la X como el marker 
+    // probe haciendo un segundo arr.every para el marker O pero no me lo toma en la logica del if (allSame(sequence))
     const allSame = (arr) => arr.every(marker => marker === 'X');
+
+    const allSameO = (arr) => arr.every(marker => marker === 'O');
 
     const _resetGame = () => {
 
