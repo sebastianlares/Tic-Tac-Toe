@@ -4,10 +4,10 @@ body {
 
 h1 {
     position: relative;
-    font-size: 80px;
+    font-size: 100px;
     font-family: 'Darker Grotesque', sans-serif;
     text-align: center;
-    top: 60px;
+    top: 30px;
 }
 
 form {
@@ -15,7 +15,7 @@ form {
     display: flex;
     flex-direction: column;
     text-align: center;
-    top: 80px;
+    top: 40px;
 }
 
 .gameBoardContainer {
@@ -25,7 +25,7 @@ form {
     width: 450px;
     height: 450px;
     margin: auto;
-    top: 120px;
+    top: 70px;
 }
 
 .column3 {
@@ -87,3 +87,66 @@ form {
     top: 2px;
     font-size: 130px;
 }
+
+.statusBoard {
+    position: relative;
+    display: flex;
+    width: 230px;   
+    height: 50px;
+    margin: auto;
+    top: 85px;
+    font-size: 33px;
+    
+}
+
+p {
+    max-width: 450px;   
+    word-wrap: break-word;
+}
+
+.winner {
+    font-size: 35px;
+    display: flex;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+}
+
+.boardTwo {
+    position: relative;
+    display: flex;
+    width: 430px;   
+    height: 50px;
+    margin: auto;
+    top: 87px;
+    font-size: 30px;
+}
+
+.play {
+    position: relative;
+    border: none;
+    width: 100px;
+    height: 35px;
+    margin-top: 10px;
+    border-radius: 3px;
+    background: white;
+    outline: none;
+}
+
+button:hover {
+    background-color: grey;
+}
+
+label {
+    outline: none;
+    font-size: 20px;
+}
+
+input {
+    font-size: 15px;
+    outline: none;
+    width: 120px;
+    margin: 3px;
+    border: none;
+}
+

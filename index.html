@@ -14,11 +14,11 @@
     <h1>Tic Tac Toe</h1>
     <form class="names" name="names">
         <div class="one">
-            <label for="playerOne" class="playerOne">Player One</label>
+            <label for="playerOne" class="playerOne">Player One</label><br>
             <input type="text" name="playerOne" id='playerOne' required maxlength="20">
         </div>
         <div class="two">
-            <label for="playerTwo" class="playerTwos">Player Two</label>
+            <label for="playerTwo" class="playerTwos">Player Two</label><br>
             <input type="text" name="playerTwo" id="playerTwo" class='playerTwo' required maxlength="20"><br>
         </div>
         <div>
@@ -26,7 +26,12 @@
         </div>
     </form>
     <div class="gameBoardContainer">
- 
+    </div>
+    <div class="statusBoard">
+        <p class="winner" id="winner"></p>
+    </div>
+    <div class="boardTwo" id="board">
+        <p hidden id="hidden">Press the Play Button to play again!</p>
     </div>
     <script type="text/javascript" src="script.js"></script>
 </body>

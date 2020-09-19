@@ -1,11 +1,12 @@
 
 let playerOne = {};
 let playerTwo = {};
+let gamEnd = false;
 
 const gameBoard = (() => {
 
-    let boardArray = [' ', ' ', ' ', ' ', ' ', ' ', '  ', '  ', ' '];
-    const _board = document.querySelector('.gameBoardContainer');
+    let boardArray = ['', '', '', '', '', '', '', '', ''];
+    const board = document.querySelector('.gameBoardContainer');
     const box = () => document.querySelectorAll('.box');
     const marker = () => document.querySelectorAll('.marker');
 
@@ -19,7 +20,7 @@ const gameBoard = (() => {
         marker.classList.add('marker');
         box.classList.add('box');
         box.appendChild(marker);
-        _board.appendChild(box);
+        board.appendChild(box);
         _counter++;
     };
 
@@ -32,7 +33,7 @@ const gameBoard = (() => {
         for (let i = 1; i <= 4; i++) {
             let column = document.createElement('div');
             column.classList.add('column' + i);
-            _board.appendChild(column);
+            board.appendChild(column);
         };
     };
     _makeColumns();
@@ -54,7 +55,7 @@ const gameForm = (() => {
 
         playerOne = _setPlayerOne();
         playerTwo = _setPlayerTwo();
-        console.log(playerOne, playerTwo);
+        document.getElementById('play').style.pointerEvents = 'none';
     });
 
     _setPlayerOne = () => {
@@ -68,6 +69,10 @@ const gameForm = (() => {
         const playerTwoName = playerTwoInput.value;
         return playerFactory(playerTwoName, 'O', false);
     };
+
+    return {
+        formElement
+    }
 })();
 
 const playerFactory = (name, marker, turn) => {
@@ -80,70 +85,115 @@ const playerFactory = (name, marker, turn) => {
 
 const gameLogic = (() => {
 
+    const play = document.getElementById('play');
+    const display = document.getElementById('winner');
+    const playAgain = document.getElementById('hidden');
+
     let winningCombinations = [
         [0, 1, 2], 
         [3, 4, 5], 
         [6, 7, 8],
         [0, 3, 6],
-        [2, 4, 7],
-        [3, 5, 8],
+        [1, 4, 7],
+        [2, 5, 8],
         [0, 4, 8],
         [2, 4, 6]
     ];
 
     const playButton = document.getElementById('play');
     playButton.addEventListener('click', () => {
-        _resetGame();
-        startGame();
+        if (gamEnd === true) {
+            _resetGame();
+        }
+        else startGame();
     });
 
     const startGame = () => {
         gameBoard.box().forEach(box => {
             box.addEventListener('click', () => {
-                let marker = document.getElementById('marker' + box.id);
-                _setTurnAndPopulateArray(marker, box);
-                checkWinner();
-            }, {once: true});
+                _setTurnAndPopulateArray(box),
+                checkWinner(),
+                {once: true}
+            });
         });
     };
 
-    const _setTurnAndPopulateArray = (marker, box) => {
-
-            if (playerOne.turn == true) {
-                marker.innerText = playerOne.marker;
-                gameBoard.boardArray[box.id] = playerOne.marker;
-                playerOne.turn = false;
-                playerTwo.turn = true;
-            }
-            else if (playerTwo.turn == true) {
-                marker.innerText = playerTwo.marker;
-                gameBoard.boardArray[box.id] = playerTwo.marker;
-                playerTwo.turn = false;
-                playerOne.turn = true;
-            }
+    const _setTurnAndPopulateArray = (box) => {
+        let marker = document.getElementById('marker' + box.id);
+        if (playerOne.turn === true) {
+            marker.innerText = playerOne.marker;
+            gameBoard.boardArray[box.id] = playerOne.marker;
+            playerOne.turn = false;
+            playerTwo.turn = true;
+        }
+        else if (playerTwo.turn === true) {
+            marker.innerText = playerTwo.marker;
+            gameBoard.boardArray[box.id] = playerTwo.marker;
+            playerTwo.turn = false;
+            playerOne.turn = true;
+        }
     };
 
     const checkWinner = () => {
-
-        winningCombinations.forEach(comb => {
-            const sequence = [gameBoard.boardArray[comb[0]],gameBoard.boardArray[comb[1]], gameBoard.boardArray[comb[2]]];
-
-                                    // no reconoce el marker O
-            if (allSame(sequence) || allSameO(sequence)) {
-                console.log('winner');
+        winningCombinations.forEach(comb => { 
+            const winnerIsX = checkWinnerByValue(comb, 'X');
+            const winnerIsO = checkWinnerByValue(comb, 'O');
+            if (winnerIsX) { 
+                displayWinner(playerOne);
+                disableBoard();
+                play.style.pointerEvents = 'auto';
+                gamEnd = true;
+            }
+            else if (winnerIsO) {
+                displayWinner(playerTwo);
+                disableBoard();
+                play.style.pointerEvents = 'auto';
+                gamEnd = true;
+            }
+            else if (isDraw(gameBoard.boardArray)) {
+                displayWinner('draw');
+                play.style.pointerEvents = 'auto';
+                gamEnd = true;
             }
         });
     };
 
+    const checkWinnerByValue = (arr, mark) => {
+        const isEqual = arr.every((elementIndex) => {
+            return gameBoard.boardArray[elementIndex] === mark;
+        });
+        return isEqual;
+    };
 
-    // No logro setear el marker para que sea X u O, me elige siempre la X, por mas que ponga como marker la 'O'. Creo que el problema esta en que el gameBoard.boardArray tomo solo la X como el marker 
-    // probe haciendo un segundo arr.every para el marker O pero no me lo toma en la logica del if (allSame(sequence))
-    const allSame = (arr) => arr.every(marker => marker === 'X');
+    const isDraw = (arr) => {
+        const draw = arr.every(index => index !== '');
+        return draw;
+    }; 
 
-    const allSameO = (arr) => arr.every(marker => marker === 'O');
+    const displayWinner = (winner) => {
+        playAgain.hidden = false;
+        display.hidden = false;
 
-    const _resetGame = () => {
+        if (winner === 'draw') {
+            display.innerText = "It's a draw!";
+        }
+        else display.innerText = `${winner.name} wins!`;
+    };
 
+    const disableBoard  = () => {
+        gameBoard.box().forEach(box => {
+            box.style.pointerEvents = 'none';
+        });
+    };
+
+    const _resetGame = () =>  {
+        gameBoard.boardArray = ['', '', '', '', '', '', '', '', ''];
+        console.log(gameBoard.boardArray);
+        gameBoard.marker().forEach(marker => marker.innerText = '');
+        gameBoard.box().forEach(box => box.style.pointerEvents = 'auto');
+        play.style.pointerEvents = 'auto';
+        playAgain.hidden = true;
+        display.innerText = '';
     };
 
 })();
